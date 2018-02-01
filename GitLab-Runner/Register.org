@@ -7,7 +7,7 @@
 이 방법은 인증 기관을 거치지 않고 SSL 인증을 하여 *GitLab Runner* 를 등록하는 방법이다.
 
 ** 필요 사항
-- [[https://www.openssh.com/][openssh]]
+- [[https://www.openssl.org/][openssl]]
 
 ** GitLab 서버에서
 
