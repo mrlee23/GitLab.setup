@@ -1,0 +1,4 @@
+#+TITLE: GitLab Setup
+
+* 개요
+본 프로젝트는 GitLab 설정을 정리를 위해 만들어졌다.
