@@ -19,3 +19,15 @@ $ cat /home/gitlab-runner/id_rsa.pub
 #+END_SRC
 
 공개키 =/home/gitlab-runner/id_rsa.pub= 를 GitLab 서버의 =Settings > Repository > Deploy Keys= (프로젝트에서만 사용) 혹은 =Settings > SSH Keys= (계정의 모든 프로젝트에서 사용) 에 추가한다.
+
+* SSH 인증 문제 해결 방법
+
+** Host key verification failed
+[[https://askubuntu.com/questions/45679/ssh-connection-problem-with-host-key-verification-failed-error][참고]]
+
+이 증상은 서버의 호스트키가 변경되었기 나타난다. =StrictHostKeyChecking= 옵션을 =no= 로 ssh를 연결을 확인하면 문제가 해결된다.
+
+#+NAME: ssh1
+#+BEGIN_SRC sh
+$ ssh -v -o StrictHostKeyChecking=no git@gitlab.example.com
+#+END_SRC
