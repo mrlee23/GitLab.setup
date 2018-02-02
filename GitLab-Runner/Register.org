@@ -1,8 +1,10 @@
 #+TITLE: Gitlab Runner > Runner 등록하기
+#+AUTHOR: Dongsoo Lee
+#+EMAIL: dongsoolee8@gmail.com
 
 [[https://docs.gitlab.com/runner/register/index.html][Ofiicial Documentation]]
 
-* Self-signed cerificate
+* Self-signed certificate
 
 이 방법은 인증 기관을 거치지 않고 SSL 인증을 하여 *GitLab Runner* 를 등록하는 방법이다.
 

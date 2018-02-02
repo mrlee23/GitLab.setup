@@ -1,0 +1,43 @@
+#+TITLE: GitLab Pages
+#+AUTHOR: Dongsoo Lee
+#+EMAIL: dongsoolee8@gmail.com
+
+* 필요 사항
+[[../GitLab-Runner/Register.org][Self-signed Self-signed cerificate]] 에서 =/etc/gitlab/ssl= 디렉토리에 =gitlab.key=, =gitlab.crt= 파일을 먼저 위치시켜야 한다.
+
+* /etc/gitlab/gitlab.rb
+
+#+NAME: gitlab.rb
+#+BEGIN_SRC ruby
+# GitLab 기본 설정
+external_url "https://gitlab.example.com"
+nginx['custom_gitlab_server_config'] = "allow 12.34.56.78;deny all;" # 12.34.56.78을 제외한 다른 IP를 Nginx에서 모두 차단한다.
+nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+
+# GitLab Pages 설정
+pages_external_url "https://pages.gitlab.example.com"
+
+gitlab_pages['enable'] = true
+
+gitlab_pages['cert'] = "/etc/gitlab/ssl/gitlab.crt"
+gitlab_pages['cert_key'] = "/etc/gitlab/ssl/gitlab.key"
+
+gitlab_pages['dir'] = "/var/opt/gitlab/gitlab-pages"
+gitlab_pages['log-directory'] = "/var/log/gitlab/gitlab-pages"
+
+# GitLab Pages Nginx 설정
+pages_nginx['enable'] = true
+pages_nginx['redirect_http_to_https'] = true
+pages_nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab.crt"
+pages_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab.key"
+
+# GitLab Pages Nginx 개별 설정(nginx/gitlab.conf 에 저장됨)
+pages_nginx['custom_gitlab_server_config'] = "allow 12.34.56.78;deny all;" # 12.34.56.78을 제외한 다른 IP를 Nginx에서 모두 차단한다.
+
+gitlab_rails['pages_path'] = "/mnt/storage/pages" # GitLab Pages를 deploy할 경로
+#+END_SRC
+
+* .gitlab-ci.yml
+
+[[https://docs.gitlab.com/ee/user/project/pages/getting_started_part_four.html][공식 문서 참조]]
