@@ -41,3 +41,7 @@ gitlab_rails['pages_path'] = "/mnt/storage/pages" # GitLab Pages를 deploy할 �
 * .gitlab-ci.yml
 
 [[https://docs.gitlab.com/ee/user/project/pages/getting_started_part_four.html][공식 문서 참조]]
+
+* Pages 확인
+설정 완료 후 Pages Deploy 까지 완료 되면 =https://username.gitlab.example.com/project_name= 에서 웹문서를 볼 수 있다.
+Pages가 Deploy 되었는지 알기 위해서는 Settings > Pages 에서 해당 URL 주소가 나타나 있는지 확인하면 된다.
