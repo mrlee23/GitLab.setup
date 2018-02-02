@@ -1,0 +1,21 @@
+#+TITLE: GitLab Runner > SSH 설정
+
+* 개요
+GitLab Runner 에서 같은 계정의 git submodule을 clone하거나 다른 브랜치로 push할 경우 ssh key가 필요하다.
+GitLab Runner에서 생성한 ssh-key를 프로젝트 단위로 =Settings > Repository > Deploy Keys= 에서 개별 프로젝트에만 ssh key를 추가하거나 계정 단위로 =Settings > SSH Keys= 에서 추가할 수 있다.
+
+* ssh-keygen
+** 요구 사항
+- sudo
+ssh-keygen 시 *gitlab-runner* 사용자로 만들어야 한다.
+사용자를 변경하여 사용하기 위해서는 *sudo* 명령어가 필요하다.
+
+** 키쌍 생성
+*gitlab-runner* 사용자로 RSA 형식의 4096 비트의 ssh 키쌍을 만든다.
+#+NAME: ssh-keygen
+#+BEGIN_SRC sh
+$ sudo -u gitlab-runner -H ssh-keygen -t rsa -b 4096
+$ cat /home/gitlab-runner/id_rsa.pub
+#+END_SRC
+
+공개키 =/home/gitlab-runner/id_rsa.pub= 를 GitLab 서버의 =Settings > Repository > Deploy Keys= (프로젝트에서만 사용) 혹은 =Settings > SSH Keys= (계정의 모든 프로젝트에서 사용) 에 추가한다.
