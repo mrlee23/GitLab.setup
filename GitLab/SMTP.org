@@ -1,0 +1,44 @@
+#+TITLE: GitLab > STMP 설정
+
+* Gmail을 STMP 서버로 사용해서 이메일 알림 보내기
+
+#+NAME: gmail
+#+BEGIN_SRC ruby
+gitlab_rails['smtp_enable'] = true
+gitlab_rails['smtp_address'] = "smtp.gmail.com"
+gitlab_rails['smtp_port'] = 587
+gitlab_rails['smtp_user_name'] = "my.email@gmail.com"
+gitlab_rails['smtp_password'] = "my-gmail-password"
+gitlab_rails['smtp_domain'] = "smtp.gmail.com"
+gitlab_rails['smtp_authentication'] = "login"
+gitlab_rails['smtp_enable_starttls_auto'] = true
+gitlab_rails['smtp_tls'] = false
+gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+#+END_SRC
+
+1. =stmp_user_name=, =stmp_password= 에 각각 Gmail 계정 아이디, 비밀번호를 추가합니다.
+2. 웹 브라우저에서 로그인 후에 [[https://myaccount.google.com/security]] 에서 *로그인 및 보안 > 계정 액세스 권한을 가진 앱* 에서 보안 수준이 낮은 앱 허용을 *사용* 으로 변경해야 합니다.
+
+Gmail의 경우 [[https://support.google.com/a/answer/2956491#sendinglimitsforrelay][Gmail STMP Relay 전송 한도]]가 정해져 있어 24시간 동안 릴레이할 수 있는 최대 메일 수는 *10000개* 입니다.
+
+* 적용
+
+=/etc/gitlab/gitlab.rb= 파일을 수정한 뒤 =reconfigure= 후 재시작을 하여 변경된 설정을 적용합니다.
+#+NAME: apply
+#+BEGIN_SRC sh
+$ sudo gitlab-ctl stop && sudo gitlab-ctl reconfigure && sudo gitlab-ctl restart
+#+END_SRC
+
+* 테스트
+
+#+NAME: check
+#+BEGIN_SRC sh
+$ sudo gitlab-rails console
+irb(main):001:0> Notify.test_email('destination_email@address.com', 'Message Subject', 'Message Body').deliver_now
+#+END_SRC
+
+=destination_email@address.com= 부분을 이메일 계정으로 변경한 후 이메일이 오는지 확인하면 설정 완료.
+
+* 참고
+- [[https://docs.gitlab.com/omnibus/settings/smtp.html][SMTP 설정 방법(Official)]]
+- [[https://docs.gitlab.com/ee/administration/reply_by_email_postfix_setup.html#set-up-postfix-for-reply-by-email][Postfix 설정(Official]]
