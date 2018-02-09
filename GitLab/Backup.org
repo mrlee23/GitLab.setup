@@ -1,0 +1,76 @@
+#+TITLE: GitLab > 백업 설정
+
+* 백업
+
+** Omnibus 패키지(일반적인 경우)
+#+NAME: backup_omnibus
+#+BEGIN_SRC sh
+sudo gitlab-rake gitlab:backup:create
+#+END_SRC
+
+** 직접 설치한 경우(from source)
+#+NAME: backup_source
+#+BEGIN_SRC sh
+sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
+#+END_SRC
+
+** Docker 컨테이너에서
+#+NAME: backup_docker
+#+BEGIN_SRC sh
+sudo docker exec -t gitlab gitlab-rake gitlab:backup:create
+#+END_SRC
+
+* 백업 완료 후
+백업을 완료하면 기본 설정의 경우 =/var/opt/gitlab/backups= 위치에 =.tar= 압축 파일이 생성이 됩니다.
+백엽 파일의 이름은 압축된 시간의 10자리의 *Unix timestamp* 와 *날짜*, *gitlab 버전* 등이 이름으로 옵니다.
+
+#+BEGIN_EXAMPLE
+예) 1518152422_2018_02_09_10.4.0_gitlab_backup.tar
+#+END_EXAMPLE
+
+* 스케줄링
+GitLab은 백업한 파일을 자동으로 클라우드에 저장하거나 로컬 디렉토리에 저장할 수 있는 설정 옵션을 제공하고 있습니다.
+설정 방법은 아래와 같습니다.
+
+** /etc/gitlab/gitlab.rb
+
+*** Amazon S3로 보낼 때
+#+NAME: gitlab.rb_amazon
+#+BEGIN_SRC ruby
+gitlab_rails['backup_upload_connection'] = {
+  'provider' => 'AWS',
+  'region' => 'eu-west-1',
+  'aws_access_key_id' => 'AKIAKIAKI',
+  'aws_secret_access_key' => 'secret123'
+  # If using an IAM Profile, don't configure aws_access_key_id & aws_secret_access_key
+  # 'use_iam_profile' => true
+}
+gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+#+END_SRC
+
+*** Google Cloud 저장소로 보낼 때
+#+NAME: gitlab.rb_google
+#+BEGIN_SRC ruby
+gitlab_rails['backup_upload_connection'] = {
+  'provider' => 'Google',
+  'google_storage_access_key_id' => 'Access Key',
+  'google_storage_secret_access_key' => 'Secret'
+}
+gitlab_rails['backup_upload_remote_directory'] = 'my.google.bucket'
+#+END_SRC
+
+*** 로컬 저장소로 보낼 때
+#+NAME: gitlab.locally
+#+BEGIN_SRC ruby
+gitlab_rails['backup_upload_connection'] = {
+  :provider => 'Local',
+  :local_root => '/mnt/backups'
+}
+
+# The directory inside the mounted folder to copy backups to
+# Use '.' to store them in the root directory
+gitlab_rails['backup_upload_remote_directory'] = 'gitlab_backups'
+#+END_SRC
+
+* 참조
+- [[https://docs.gitlab.com/ee/raketasks/backup_restore.html]]
